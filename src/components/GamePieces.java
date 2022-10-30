@@ -55,40 +55,40 @@ public class GamePieces {
         map_Y_P2.put("P2 Rat", 1);
     }
 
-    public void removegamePieceP1(String gamePiece){
-        this.map_X_P1.remove(gamePiece);
-        this.map_Y_P1.remove(gamePiece);
-    }
-
-    public void removegamePieceP2(String gamePiece){
+    public void removeGamePiece(String Player, String gamePiece){
+        if(Player.equals("P1")){
+            this.map_X_P1.remove(gamePiece);
+            this.map_Y_P1.remove(gamePiece);
+            return;
+        }       
         this.map_X_P2.remove(gamePiece);
         this.map_Y_P2.remove(gamePiece);
     }
     
-    public void setMapP1(String gamePiece, Integer X, String Y){
-        Integer column = setColumn(Y.charAt(0));
-        this.map_X_P1.replace(gamePiece, X);
-        this.map_Y_P1.replace(gamePiece, column);
-    }
-    public void setMapP2(String gamePiece, Integer X, String Y){
-        Integer column = setColumn(Y.charAt(0));
+    public void setMap(String Player, String gamePiece, Integer X, String Y){
+        Integer column;
+        if(Player.equals("P1")){
+            column = setColumn(Y.charAt(0));
+            this.map_X_P1.replace(gamePiece, X);
+            this.map_Y_P1.replace(gamePiece, column);
+            return;
+        }
+        column = setColumn(Y.charAt(0));
         this.map_X_P2.replace(gamePiece, X);
         this.map_Y_P2.replace(gamePiece, column);
     }
 
-    public HashMap<String, Integer> getXMapP1(){
-        return map_X_P1;
-    }
-
-    public HashMap<String, Integer> getYMapP1(){
-        return map_Y_P1;
-    }
-
-    public HashMap<String, Integer> getXMapP2(){
+    public HashMap<String, Integer> getXMap(String Player){
+        if(Player.equals("P1")){
+            return map_X_P1;
+        }
         return map_X_P2;
     }
 
-    public HashMap<String, Integer> getYMapP2(){
+    public HashMap<String, Integer> getYMap(String Player){
+        if(Player.equals("P1")){
+            return map_Y_P1;
+        }
         return map_Y_P2;
     }
 
