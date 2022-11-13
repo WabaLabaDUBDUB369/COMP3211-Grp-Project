@@ -7,6 +7,8 @@ abstract class checkMoveValidity{
     public abstract boolean moveValidity(String gamePiece, Integer row, Integer column, HashMap<String, Integer> map_X_currPlayer, HashMap<String, Integer> map_Y_currPlayer);
 }
 
+//Checks whether the intended move by the current player is attempting to move to a position, which already consists of another game piece of the same player
+//More implementation details can be found in the corresponding unit test for the class
 class MoveOnOwnPiece extends checkMoveValidity{
     public boolean moveValidity(String gamePiece, Integer row, Integer column, HashMap<String, Integer> map_X_currPlayer, HashMap<String, Integer> map_Y_currPlayer){
         if(map_X_currPlayer.get(gamePiece) == row && map_Y_currPlayer.get(gamePiece) == column){
@@ -21,6 +23,8 @@ class MoveOnOwnPiece extends checkMoveValidity{
     }
 }
 
+//This is used to test if the player is attempting to move more than one square either horizontally or vertically
+//More implementation details can be found in the corresponding unit test for the class
 class MoveMoreThanOneSquare extends checkMoveValidity {
 
     public boolean moveValidity(String gamePiece, Integer row, Integer column, HashMap<String, Integer> map_X_currPlayer, HashMap<String, Integer> map_Y_currPlayer){
@@ -34,6 +38,8 @@ class MoveMoreThanOneSquare extends checkMoveValidity {
     }
 }
 
+//This validates if a game piece other than the Rat is trying to move to a water square
+//More implementation details can be found in the corresponding unit test for the class
 class MoveOnWaterSquare extends checkMoveValidity {
     public boolean moveValidity(String gamePiece, Integer row, Integer column, HashMap<String, Integer> map_X_currPlayer, HashMap<String, Integer> map_Y_currPlayer){
         if((!gamePiece.equals("P1 Rat") && !gamePiece.equals("P2 Rat")) && (row == 4 || row == 5 || row == 6) && (column == 2 || column == 3 || column == 5 || column == 6)){
@@ -43,6 +49,8 @@ class MoveOnWaterSquare extends checkMoveValidity {
     }
 }
 
+//Checking whether the player is attempting to move to its own den
+//More implementation details can be found in the corresponding unit test for the class
 class MoveOnOwnDen extends checkMoveValidity {
     public boolean moveValidity(String gamePiece, Integer row, Integer column, HashMap<String, Integer> map_X_currPlayer, HashMap<String, Integer> map_Y_currPlayer){
         String player = gamePiece.split("\\s+")[0];
@@ -59,9 +67,11 @@ class MoveOnOwnDen extends checkMoveValidity {
     }
 }
 
+//More implementation details about each of the methods can be found in the corresponding unit tests for the class
 class GamePieceDependentValidity {
     public Boolean onValidSquareForCrossingRiver = false;
 
+    //Checking for an incorrect game piece, i.e. Monkey
     public boolean invalidPiece(String gamePiece){
         String animal = gamePiece.split("\\s+")[1];
         if(!(animal.equals("Elephant") || animal.equals("Lion") || animal.equals("Tiger") || animal.equals("Leopard") || animal.equals("Wolf") || animal.equals("Dog") || animal.equals("Cat") || animal.equals("Rat"))){
@@ -69,6 +79,8 @@ class GamePieceDependentValidity {
         }
         return false;
     }
+
+    //This will check whether the intended move is within the bounds of the game board
     public boolean moveOutOfBoard(Integer row, Integer column){
         if(row < 1 || row > 9 || column == 0){
             return true;
@@ -76,6 +88,7 @@ class GamePieceDependentValidity {
         return false;
     }
 
+    //This finds out if the Tiger and the Lion gamePiece can cross the water squares vertically or horizontally
     public boolean moveOverWaterSquare(String gamePiece, Integer row, Integer column, HashMap<String, Integer> map_X_currPlayer, HashMap<String, Integer> map_Y_currPlayer, HashMap<String, Integer> map_X_prevPlayer, HashMap<String, Integer> map_Y_prevPlayer){
         String currPlayerRat = "";
         String prevPlayerRat = "";
@@ -88,14 +101,12 @@ class GamePieceDependentValidity {
             prevPlayerRat = "P1 Rat";
         }
 
-        System.out.println("The first test is: " + (Math.abs(map_X_currPlayer.get(gamePiece) - row) - 1) + " " + map_Y_currPlayer.get(gamePiece) + " " + row + " " + column);
-        System.out.println("The second test: " + (Math.abs(map_Y_currPlayer.get(gamePiece) - column) - 1) + " " + map_X_currPlayer.get(gamePiece) + " " + row + " " + column);
-
         if( (gamePiece.split("\\s+")[1].equals("Tiger") || gamePiece.split("\\s+")[1].equals("Lion"))
         && ( (Math.abs(map_X_currPlayer.get(gamePiece) - row) - 1 == 3 && map_Y_currPlayer.get(gamePiece) == column) ||
              (Math.abs(map_Y_currPlayer.get(gamePiece) - column) - 1 == 2 && map_X_currPlayer.get(gamePiece) == row) )
         )
         {
+            //if the Tiger or the Lion piece is attempting to cross the water squares vertically
             if(
                 (Math.abs(map_X_currPlayer.get(gamePiece) - row) - 1 == 3 && map_Y_currPlayer.get(gamePiece) == column) &&
                 (column == 2 || column == 3 || column == 5 || column == 6) &&
@@ -103,18 +114,19 @@ class GamePieceDependentValidity {
             ){
                 onValidSquareForCrossingRiver = true;
                 minRowOrColumn = Math.min(map_X_currPlayer.get(gamePiece), row) + 1;
-                System.out.println("The 3rd test 1");
+
+                //checking for Rat pieces in the intervening water squares
                 for(int i=minRowOrColumn; i<minRowOrColumn+3; i++){
                     if(
                         (map_X_currPlayer.get(currPlayerRat) == i && map_Y_currPlayer.get(currPlayerRat) == column) ||
                         (map_X_prevPlayer.get(prevPlayerRat) == i && map_Y_prevPlayer.get(prevPlayerRat) == column)
                     ){
-                        System.out.println("From the row.\n");
                         return true;
                     }
                 }
             }
 
+            //if the Tiger or the Lion piece is attempting to cross the water squares horizontally
             else if(
                 (Math.abs(map_Y_currPlayer.get(gamePiece) - column) - 1 == 2 && map_X_currPlayer.get(gamePiece) == row) &&
                 (row == 4 || row == 5 || row == 6) &&
@@ -127,14 +139,13 @@ class GamePieceDependentValidity {
             ){
                 onValidSquareForCrossingRiver = true;
                 minRowOrColumn = Math.min(map_Y_currPlayer.get(gamePiece), column) + 1;
-                System.out.println("The 3rd test 2");
 
+                //checking for Rat pieces in the intervening water squares
                 for(int i=minRowOrColumn; i<minRowOrColumn+2; i++){
                     if(
                         (map_X_currPlayer.get(currPlayerRat) == row && map_Y_currPlayer.get(currPlayerRat) == i) ||
                         (map_X_prevPlayer.get(prevPlayerRat) == row && map_Y_prevPlayer.get(prevPlayerRat) == i)
                     ){
-                        System.out.println("From the column.\n");
                         return true;
                     }
                 }
@@ -148,6 +159,7 @@ public class PlayPiece {
     private HashMap<String, Integer> pieceRank = new HashMap<>();
     private String piecePresent = "";
 
+    //setting the gamePiece ranks
     public PlayPiece() {
         pieceRank.put("Elephant", 8);
         pieceRank.put("Lion", 7);
@@ -169,7 +181,8 @@ public class PlayPiece {
         Integer column = setColumn(input[1].charAt(0));
         Integer row = Integer.parseInt(input[2]);
 
-
+        //Doing validation checks for each of the player's moves
+        //More implementation details about each of the methods can be found in the corresponding unit tests for the class
         if(gamePieceDependentValidity.invalidPiece(input[0])){
             return("The game piece is not correct!");
         }
@@ -189,13 +202,11 @@ public class PlayPiece {
             else if(!gamePieceDependentValidity.onValidSquareForCrossingRiver){
                 return("Can not move more than one square vertically or horizontally!");
             }
-            System.out.println("The boolean result is: " + gamePieceDependentValidity.onValidSquareForCrossingRiver);
         }
         else if(moveOnOwnDen.moveValidity(input[0], row, column, map_X_currPlayer, map_Y_currPlayer)){
             return("Can not move into own den!");
         }
         else if(checkIfPiecePresent(row, column, map_X_prevPlayer, map_Y_prevPlayer)){
-            System.out.println("The piece can capture: " + piecePresent);
             if(!canCapturePiece(input[0], row, column, map_X_currPlayer, map_Y_currPlayer, map_X_prevPlayer, map_Y_prevPlayer)){
                 return("Move is not valid.");
             }
@@ -204,15 +215,18 @@ public class PlayPiece {
 
     }
 
-
+    //This is used for checking if the current player's gamePiece can capture the opponent player's piece
+    //More implementation details of this method can be found in the corresponding unit test for the class
     public boolean canCapturePiece(String gamePiece, Integer row, Integer column, HashMap<String, Integer> map_X_currPlayer, HashMap<String, Integer> map_Y_currPlayer, HashMap<String, Integer> map_X_prevPlayer, HashMap<String, Integer> map_Y_prevPlayer){
 
+        //The Rat can capture the opponent's Elephant piece, if both of them are on land squares
         if(gamePiece.split("\\s+")[1].equals("Rat") && piecePresent.split("\\s+")[1].equals("Elephant") &&
             !pieceOnWaterSquare(gamePiece, map_X_currPlayer, map_Y_currPlayer)) {
 
             System.out.println("The Rat piece captures the opponent's Elephant piece");
             return true;
         }
+        //The Rat can capture the opponent's Rat piece, if both of them are on land or on water squares
         else if(gamePiece.split("\\s+")[1].equals("Rat") && piecePresent.split("\\s+")[1].equals("Rat") &&
         ((pieceOnWaterSquare(gamePiece, map_X_currPlayer, map_Y_currPlayer) && pieceOnWaterSquare(piecePresent, map_X_prevPlayer, map_Y_prevPlayer)) ||
          (!pieceOnWaterSquare(gamePiece, map_X_currPlayer, map_Y_currPlayer) && !pieceOnWaterSquare(piecePresent, map_X_prevPlayer, map_Y_prevPlayer)))) {
@@ -220,25 +234,28 @@ public class PlayPiece {
             System.out.println("The Rat piece captures the opponent's Rat piece");
             return true;
         }
+        //if Player 1 moves into Player 2's den
         else if(gamePiece.split("\\s+")[0].equals("P1") && ((map_X_prevPlayer.get(piecePresent) == 1 && (map_Y_prevPlayer.get(piecePresent) == 3 || map_Y_prevPlayer.get(piecePresent) == 5)) ||
                                                             (map_X_prevPlayer.get(piecePresent) == 2 && map_Y_prevPlayer.get(piecePresent) == 4))
         ){
             return true;
         }
+        //if Player 2 moves into Player 1's den
         else if(gamePiece.split("\\s+")[0].equals("P2") && ((map_X_prevPlayer.get(piecePresent) == 9 && (map_Y_prevPlayer.get(piecePresent) == 3 || map_Y_prevPlayer.get(piecePresent) == 5)) ||
                                                             (map_X_prevPlayer.get(piecePresent) == 8 && map_Y_prevPlayer.get(piecePresent) == 4))
         ){
             return true;
         }
+        //if the current player can capture the opponent's gamePiece with a higher or equal ranked piece
         else if((pieceRank.get(gamePiece.split("\\s+")[1]) >= pieceRank.get(piecePresent.split("\\s+")[1]))
                 && !pieceOnWaterSquare(gamePiece, map_X_currPlayer, map_Y_currPlayer) && !pieceOnWaterSquare(piecePresent, map_X_prevPlayer, map_Y_prevPlayer)
                 && !gamePiece.split("\\s+")[1].equals("Elephant") && !piecePresent.split("\\s+")[1].equals("Rat")){
             return true;
         }
-
         return false;
     }
 
+    //Used for checking if a gamePiece is on a water square
     public boolean pieceOnWaterSquare(String gamePiece, HashMap<String, Integer> map_X, HashMap<String, Integer> map_Y){
         if((map_X.get(gamePiece) == 4 || map_X.get(gamePiece) == 5 || map_X.get(gamePiece) == 6) && (map_Y.get(gamePiece) == 2 || map_Y.get(gamePiece) == 3 || map_Y.get(gamePiece) == 5)){
             return true;
@@ -246,6 +263,9 @@ public class PlayPiece {
         return false;
     }
 
+    //Used to determine if there is an opponent gamePiece on the square that the current player is trying to move
+    //If such a piece is found, then it will return true,or else will return false
+    //It also sets the value of the class attribute (called "piecePresent") to the name of the opponent's gamePiece that is being found
     public boolean checkIfPiecePresent(Integer row, Integer column, HashMap<String, Integer> map_X_prevPlayer, HashMap<String, Integer> map_Y_prevPlayer){
         for(String animal : map_X_prevPlayer.keySet()){
             if(map_X_prevPlayer.get(animal) == row && map_Y_prevPlayer.get(animal) == column){
@@ -256,6 +276,8 @@ public class PlayPiece {
         return false;
     }
 
+    //Used to determine if there is an opponent gamePiece on the square that the current player is trying to move
+    //it will return the name of the opponent piece if it is found, or will return an empty String if not found
     public String checkIfPiecePresent(Integer row, String column, HashMap<String, Integer> map_X_prevPlayer, HashMap<String, Integer> map_Y_prevPlayer){
         for(String animal : map_X_prevPlayer.keySet()){
             if(map_X_prevPlayer.get(animal) == row && map_Y_prevPlayer.get(animal) == setColumn(column.charAt(0))){
@@ -265,7 +287,9 @@ public class PlayPiece {
         return "";
     }
 
+    //Used for determining whether a player has won the game or not
     public String decideGameWinner(String Player, String gamePiece, HashMap<String, Integer> map_X_currPlayer, HashMap<String, Integer> map_Y_currPlayer, HashMap<String, Integer> map_X_prevPlayer, HashMap<String, Integer> map_Y_prevPlayer){
+        //if one of the player's HashMap is empty (no pieces left on the board)
         if(map_X_prevPlayer.isEmpty() && map_Y_prevPlayer.isEmpty()){
             if(Player.equals("P1")){
                 System.out.println("Player 1 has won after capturing all the Player 2's pieces.");
@@ -274,7 +298,8 @@ public class PlayPiece {
             }
             return "exit";
         }
-        else if((map_X_currPlayer.get(gamePiece) == 9 && map_Y_currPlayer.get(gamePiece) == 4) || (map_X_currPlayer.get(gamePiece) == 9 && map_Y_currPlayer.get(gamePiece) == 4)){
+        //if the current player is able to move into the opponent player's den
+        else if((map_X_currPlayer.get(gamePiece) == 1 && map_Y_currPlayer.get(gamePiece) == 4) || (map_X_currPlayer.get(gamePiece) == 9 && map_Y_currPlayer.get(gamePiece) == 4)){
             if(Player.equals("P1")){
                 System.out.println("Player 1 has won after moving into Player 2's Den.");
             } else {
@@ -285,9 +310,8 @@ public class PlayPiece {
         return "No Winner";
     }
 
-
+    //returns the integer position of the column, from the character position
     public Integer setColumn(Character input){
-        // System.out.println("The value is: " + input);
         switch(input){
             case 'A':
                 return 1;

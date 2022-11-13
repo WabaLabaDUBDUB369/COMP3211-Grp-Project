@@ -4,9 +4,11 @@ import java.util.Collections;
 
 
 public class Map {
-    
+
+    //used for displaying the Map UI and the player's game pieces on the corresponding squares
     public void printMap(HashMap<String, Integer> map_X_P1, HashMap<String, Integer> map_Y_P1, HashMap<String, Integer> map_X_P2, HashMap<String, Integer> map_Y_P2){
         System.out.println("   ______________________________________________________________________________________________________________________");
+        //for each row, 7 columns are displayed
         for(int row = 9; row >= 1; row--){
             String[] rowPiecesP1 = rowPiecesP1(map_X_P1, row, Collections.frequency(map_X_P1.values(), row));
             String[] rowPiecesP2 = rowPiecesP2(map_X_P2, row, Collections.frequency(map_X_P2.values(), row));
@@ -81,6 +83,7 @@ public class Map {
         
     }
 
+    //returns the names of all the gamePieces in a particular row
     public String[] rowPiecesP1(HashMap<String, Integer> map_X_P1, int row, int size){
         int index = 0;
         String[] rowPieces = new String[size];
@@ -103,6 +106,8 @@ public class Map {
         return rowPieces;
     }
 
+    //checks whether a gamePiece is present on a particular square
+    //By using the column position and the set of gamePieces on a particular row
     public String columnPieceP1(HashMap<String, Integer> map_Y_P1, String[] rowPiecesP1, int column){
         for(String gamePiece: rowPiecesP1){
             if(map_Y_P1.get(gamePiece) == column){

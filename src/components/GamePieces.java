@@ -3,20 +3,14 @@ import java.util.*;
 
 
 public class GamePieces {
-    
-    // private ArrayList<String> pieceSet1  = new ArrayList<String>(
-    //     Arrays.asList("Rat", "Cat", "Dog", "Wolf", "Leopard", "Tiger", "Lion", "Elephant")
-    // );
-    // private ArrayList<String> pieceSet2  = new ArrayList<String>(
-    //     Arrays.asList("Rat", "Cat", "Dog", "Wolf", "Leopard", "Tiger", "Lion", "Elephant")
-    // );
 
+    //HashMaps for storing all the row and column positions separately, for both of the players
     private HashMap<String, Integer> map_X_P1 = new HashMap<>();
     private HashMap<String, Integer> map_Y_P1 = new HashMap<>();
     private HashMap<String, Integer> map_X_P2 = new HashMap<>();
     private HashMap<String, Integer> map_Y_P2 = new HashMap<>();
 
-    
+    //setting the initial positions
     public GamePieces() {
         map_X_P1.put("P1 Tiger", 1);
         map_X_P1.put("P1 Lion", 1);
@@ -55,6 +49,7 @@ public class GamePieces {
         map_Y_P2.put("P2 Rat", 1);
     }
 
+    //removes the gamePiece of a player from both the row and the column HashMap
     public void removeGamePiece(String Player, String gamePiece){
         if(Player.equals("P1")){
             this.map_X_P1.remove(gamePiece);
@@ -64,7 +59,8 @@ public class GamePieces {
         this.map_X_P2.remove(gamePiece);
         this.map_Y_P2.remove(gamePiece);
     }
-    
+
+    //updates the HashMaps of a player after his/her turn
     public void setMap(String Player, String gamePiece, Integer X, String Y){
         Integer column;
         if(Player.equals("P1")){
@@ -78,6 +74,7 @@ public class GamePieces {
         this.map_Y_P2.replace(gamePiece, column);
     }
 
+    //returns the row HashMap for a player
     public HashMap<String, Integer> getXMap(String Player){
         if(Player.equals("P1")){
             return map_X_P1;
@@ -85,6 +82,7 @@ public class GamePieces {
         return map_X_P2;
     }
 
+    //returns the column HashMap for a player
     public HashMap<String, Integer> getYMap(String Player){
         if(Player.equals("P1")){
             return map_Y_P1;
@@ -92,6 +90,7 @@ public class GamePieces {
         return map_Y_P2;
     }
 
+    //returns the integer position of the column, from the character position
     public Integer setColumn(Character input){
         switch(input){
             case 'A':
@@ -111,9 +110,12 @@ public class GamePieces {
 
             case 'F':
                 return 6;
-            
-            default:
+
+            case 'G':
                 return 7;
+
+            default:
+                return 0;
         }
     }
 
